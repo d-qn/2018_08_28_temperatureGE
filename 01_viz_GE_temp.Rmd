@@ -146,7 +146,9 @@ bg_chart () +
 
 ```{r whole animation}
 if(generateVidAllYears) {
-  dev <- F
+  dev <- T
+  
+  referencePeriod <- c(1961, 1990)
   
   annot_colour <- tam_pal[2] #"#755764" #
   annotext_colour <- '#2b0818'
@@ -175,9 +177,8 @@ if(generateVidAllYears) {
   )
 annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 32), sep="", collapse="\n"))
   
-
   mAverageByP <- table %>% 
-    filter(Year >= 1864 & Year <= 1900) %>% 
+    filter(Year >= referencePeriod[1] & Year <= referencePeriod[2]) %>% 
     group_by(Month) %>% 
     summarise(monthlyAv = mean(Temperature))  %>% 
     ungroup()
@@ -189,7 +190,6 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
   colours <- viridis_pal(option = "A", direction = -1)(length(col.brk))
   
   dff <- table %>% 
-    select(-Precipitation) %>% 
     mutate(
     # add the last colour for NA y.average, unfinished years
     colour = colours[as.numeric(cut(yAverage, breaks = col.brk))]
@@ -212,7 +212,8 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
   moyenneMLabel <- cbind(
     tibble(
       x = 6, y = 3, 
-      label = "moyenne 1864-1900"),
+      label = paste0(
+        "moyenne ", referencePeriod[1], "-", referencePeriod[2])),
     mAverageByP %>% filter(Month == "Mars")
   ) 
    
@@ -249,7 +250,9 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
         alpha = 0.9
       ) +
       theme(
-        plot.margin = margin(1, 5, 0, -4, "pt")
+        plot.margin = margin(1, 5, 0, -4, "pt"),
+        panel.grid.major.y =  element_line(
+          color = "#c2c4d6", linetype = "dotted", size = 2),
       ) +
       geom_text(
         data = moyenneMLabel, aes(x = x, y = y, label = label),
