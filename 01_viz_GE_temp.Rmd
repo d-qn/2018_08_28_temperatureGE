@@ -252,7 +252,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       theme(
         plot.margin = margin(1, 5, 0, -4, "pt"),
         panel.grid.major.y =  element_line(
-          color = "#c2c4d6", linetype = "dotted", size = 2),
+          color = "#c2c4d6", linetype = "dotted", size = 0.7),
       ) +
       geom_text(
         data = moyenneMLabel, aes(x = x, y = y, label = label),
