@@ -39,8 +39,8 @@ library(tidyverse)
 library(magrittr)
 library(stringr)
 library(knitr)
-library(tamMap)
 library(hrbrthemes)
+library(tamMap)
 library(tamTheme)
 library(gganimate)
 ### Getting data in packages
@@ -50,8 +50,6 @@ library(viridis)
 ### Interactive 
 library(ggiraph)
 library(htmltools)
-library(swiRcharts)
-library(rCharts)
 library(highcharter)
 
 ### Misc stuff
@@ -61,7 +59,7 @@ library(highcharter)
 
 ```{r data download}
   # input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
-  rawData.file <- paste0("data/", basename(input.url))
+  # rawData.file <- paste0("data/", basename(input.url))
   rawData.file <- paste0("data/", "Gve1753_2018.txt")
 if(download_meteoSuisseData) {
   download.file(input.url, destfile = rawData.file)  
@@ -112,7 +110,7 @@ ylim <- table %>% .$Temperature %>% range()
 ```{r helper viz}
 bg_chart <- function(base_size = 22) {
   ggplot() +
-    geom_hline(yintercept = 0, colour = "darkgrey", alpha = 0.6, size = 1) + 
+    geom_hline(yintercept = 0, colour = "darkgrey", alpha = 0.6, size = 0.7) + 
   scale_x_discrete(name = "", position = "top", expand = c(0.02, 0.1)) +
   scale_y_continuous(
     name = "", expand = c(0.01, 0), 
@@ -146,7 +144,7 @@ bg_chart () +
 
 ```{r whole animation}
 if(generateVidAllYears) {
-  dev <- T
+  dev <- F
   
   referencePeriod <- c(1961, 1990)
   
@@ -236,7 +234,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       geom_line(
         data = mAverageByP,
         aes(x = Month, y = monthlyAv, group = 1), 
-        size = 2.2, alpha  = 0.7, linetype = "dashed",
+        size = 2.2, alpha  = 0.7, linetype = "dashed"
       ) +
       geom_xspline(
         data = dff %>% filter(Year == syear),
@@ -252,7 +250,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       theme(
         plot.margin = margin(1, 5, 0, -4, "pt"),
         panel.grid.major.y =  element_line(
-          color = "#c2c4d6", linetype = "dotted", size = 0.7),
+          color = "#c2c4d6", linetype = "dotted", size = 0.7)
       ) +
       geom_text(
         data = moyenneMLabel, aes(x = x, y = y, label = label),
@@ -316,8 +314,8 @@ if(generateVidShift) {
   
   bluered <- tam_pal[1:2] #c("#2C3891", '#ae0404')
   periods <- tibble(
-    start = c(1864, 1982),
-    end = c(1900, 2018),
+    start = c(1753, 1981),
+    end = c(1790, 2018)
   ) %>% 
     mutate(name = paste0(start, "-", end))
   
