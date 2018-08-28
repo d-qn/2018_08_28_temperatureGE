@@ -60,28 +60,45 @@ library(highcharter)
 ```
 
 ```{r data download}
-  input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
+  # input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
   rawData.file <- paste0("data/", basename(input.url))
+  rawData.file <- paste0("data/", "Gve1753_2018.txt")
 if(download_meteoSuisseData) {
   download.file(input.url, destfile = rawData.file)  
 }
   # Read each txt file and save it as CSV
-  header <- read.table(rawData.file, skip = 27, stringsAsFactors = FALSE, 
-                       nrows = 1) %>% unlist(use.names = F)
+  header <- read.table(rawData.file, skip = 9, 
+                       stringsAsFactors = FALSE, 
+                       nrows = 1) %>% 
+    unlist(use.names = F)
   
-  table <- read.table(rawData.file, skip = 28, stringsAsFactors = FALSE)
+  table <- read.table(rawData.file, skip = 10, stringsAsFactors = FALSE)
   colnames(table) <- header  
+  stopifnot(
+    all(table$STA == 58),
+    all(table$TG == 1),
+    all(table$HH == 0),
+    all(table$MM == 0)
+    )
+  table %<>% 
+    select(JAHR, MO, `1802`, `1649`) %>% 
+    rename(
+      Year = JAHR, 
+      Temperature = `1802`,
+      devNorme =  `1649`)
+  
 #skim(table)
 ```
 
 ```{r wrangle}
-months <- structure(1:12, names = c('Jan.', 'Fév.',	'Mars',	'Avr.',	'Mai',	'Juin',	'Juil.',	'Août',	'Sept.',	'Oct.',	'Nov.',	'Déc.'))
+months <- structure(1:12, 
+                    names = c('Jan.', 'Fév.',	'Mars',	'Avr.',	'Mai',	'Juin',	'Juil.',	'Août',	'Sept.',	'Oct.',	'Nov.',	'Déc.'))
 years_average <-  c(1981, 2010)
 
 table %<>% mutate(
-  Month = factor(names(months)[match(Month, months)], 
-                 levels = names(months)),
-)
+  Month = factor(names(months)[match(MO, months)], 
+                 levels = names(months)))
+
 yAverage <- table %>% 
   group_by(Year) %>% 
   summarise(yAverage = mean(Temperature)) %>% 
