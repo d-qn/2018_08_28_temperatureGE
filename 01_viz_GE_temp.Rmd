@@ -47,14 +47,7 @@ library(gganimate)
 
 library(ggalt)
 library(viridis)
-### Interactive 
-library(ggiraph)
-library(htmltools)
-library(highcharter)
 
-### Misc stuff
-#require(classInt)
-#require(viridis)
 ```
 
 ```{r data download}
@@ -146,6 +139,7 @@ bg_chart () +
 if(generateVidAllYears) {
   dev <- F
   
+  animationSpeed <- 0.1
   referencePeriod <- c(1961, 1990)
   
   annot_colour <- tam_pal[2] #"#755764" #
@@ -161,7 +155,9 @@ if(generateVidAllYears) {
 
   annot_text <- tibble(
     year = c(2003, 2006, 2015, 2016, 2017, 2018),
-    duration = c(51, 26, 35, 18, 18, 36),
+    duration = c(6 / animationSpeed, 3 / animationSpeed, 
+                 3.5 / animationSpeed, 2/animationSpeed,  2/animationSpeed, 
+                 4 / animationSpeed),
     x = 0.7, 
     y = 24,
     label = c(
@@ -191,7 +187,9 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
     mutate(
     # add the last colour for NA y.average, unfinished years
     colour = colours[as.numeric(cut(yAverage, breaks = col.brk))]
-  )
+  ) %>% 
+    # remove years
+    filter(Year >= 1864)
   
   yearLabel <- dff %>% 
     select(Year, yAverage, colour) %>% 
@@ -200,12 +198,6 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       x = 7.15, 
       y = 9
     )
-  
-  topYears <- dff %>% 
-    select(Year, yAverage) %>% 
-    distinct() %>% 
-    arrange(desc(yAverage)) %>% 
-    head(10) %>% .$Year
   
   moyenneMLabel <- cbind(
     tibble(
@@ -229,7 +221,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       geom_xspline(
         data = dff %>% filter(Year < syear),
         aes(x = Month, y = Temperature, group = Year, colour = colour), 
-        size = 0.2, alpha  = 0.7
+        size = 0.15, alpha  = 0.65
       ) +  
       geom_line(
         data = mAverageByP,
@@ -267,7 +259,8 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       scale_colour_identity()
   }
   
-  plots <- unique(dff$Year) %>% map(~ plotSingleYear(.x))
+  plots <- unique(dff$Year) %>% 
+    map(~ plotSingleYear(.x))
   names(plots) <- unique(dff$Year)
   
   if(dev) names(plots)
@@ -301,7 +294,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
       }
     }
   }, video.name = outfile,
-  interval = 0.15,
+  interval = animationSpeed,
   ani.width = 620 * 1.6, ani.height = 680 * 1.6
   )
 }
@@ -314,8 +307,8 @@ if(generateVidShift) {
   
   bluered <- tam_pal[1:2] #c("#2C3891", '#ae0404')
   periods <- tibble(
-    start = c(1753, 1981),
-    end = c(1790, 2018)
+    start = c(1864, 1982),
+    end = c(1900, 2018)
   ) %>% 
     mutate(name = paste0(start, "-", end))
   
@@ -415,7 +408,7 @@ if(generateVidShift) {
                  renderer = ffmpeg_renderer(
                    options = list(pix_fmt = "yuv420p", loop = 0))
   )
-  vid %>% save_animation(file = "animShift_GE.mp4")  
+  vid %>% save_animation(file = paste0("animShift_GE_", periods$start, ".mp4", collapse = "_"))  
 }
 
 

@@ -35,31 +35,43 @@ library(viridis)
 ### Interactive 
 library(ggiraph)
 library(htmltools)
-library(swiRcharts)
-library(rCharts)
 library(highcharter)
 ```
 
 ```{r data load & wrangle}
-  input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
-  rawData.file <- paste0("data/", basename(input.url))
+ # input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
+  # rawData.file <- paste0("data/", basename(input.url))
+  rawData.file <- paste0("data/", "Gve1753_2018.txt")
 
-  
   # Read each txt file and save it as CSV
-  header <- read.table(rawData.file, skip = 27, stringsAsFactors = FALSE, 
-                       nrows = 1) %>% unlist(use.names = F)
+  header <- read.table(rawData.file, skip = 9, 
+                       stringsAsFactors = FALSE, 
+                       nrows = 1) %>% 
+    unlist(use.names = F)
   
-  table <- read.table(rawData.file, skip = 28, stringsAsFactors = FALSE)
+  table <- read.table(rawData.file, skip = 10, stringsAsFactors = FALSE)
   colnames(table) <- header  
-#skim(table)
+  stopifnot(
+    all(table$STA == 58),
+    all(table$TG == 1),
+    all(table$HH == 0),
+    all(table$MM == 0)
+    )
+  table %<>% 
+    select(JAHR, MO, `1802`, `1649`) %>% 
+    rename(
+      Year = JAHR, 
+      Temperature = `1802`,
+      devNorme =  `1649`)
 
-months <- structure(1:12, names = c('Jan.', 'Fév.',	'Mars',	'Avr.',	'Mai',	'Juin',	'Juil.',	'Août',	'Sept.',	'Oct.',	'Nov.',	'Déc.'))
+months <- structure(1:12, 
+                    names = c('Jan.', 'Fév.',	'Mars',	'Avr.',	'Mai',	'Juin',	'Juil.',	'Août',	'Sept.',	'Oct.',	'Nov.',	'Déc.'))
 years_average <-  c(1981, 2010)
 
 table %<>% mutate(
-  Month = factor(names(months)[match(Month, months)], 
-                 levels = names(months)),
-)
+  Month = factor(names(months)[match(MO, months)], 
+                 levels = names(months)))
+
 yAverage <- table %>% 
   group_by(Year) %>% 
   summarise(yAverage = mean(Temperature)) %>% 
@@ -85,8 +97,7 @@ pAverage <- yAv %>%
 
 yAv %<>% mutate(
   pAverage = pAverage,
-  devAverage = yAverage - pAverage,
-  devAverageLog = log1p(abs(devAverage)) * sign(devAverage)
+  devAverage = yAverage - pAverage
 )
 
 # same but summer only July and Aug
@@ -101,13 +112,14 @@ spAverage <- summer_ja %>%
   summarise(spAverage = mean(jjaAv)) %>% 
   ungroup() %>% unlist(use.names = F)
 
-summer_ja %<>% mutate(
+summer_ja %<>% 
+  select(-MO, -devNorme) %>% 
+  mutate(
   spAverage = spAverage,
   devAverage = jjaAv - spAverage,
   pos = ifelse(devAverage >= 0, 1, -1),
-  colour = ifelse(pos == 1, "#c6266d", "#2a3589")
+  colour = ifelse(pos == 1, "#c6266d", "#2a3589") 
 ) %>% 
-  select(-Precipitation) %>% 
   spread(key = Month, value = Temperature)
 
 yAv %>% 
@@ -123,23 +135,37 @@ summer_ja %>%
 ```
 
 ```{r teaser heatmap, eval = F}
-  yAv %>% ggplot() +
+  tiles <- yAv %>% ggplot() +
   geom_tile(aes(x = Year, y = 10, fill = devAverage)) +
-  theme_tam() + 
+  theme_tam(base_size = 20) + 
   theme(
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
-    axis.title.y = element_blank()
+    axis.title.y = element_blank(),
+    legend.key.height = unit(2.5, "lines"),
+    legend.key.width = unit(1, "lines"),
+    plot.margin = unit(c(-0.2, 
+                0.2, 0.3, 0.3), "lines")
         ) + 
   scale_x_continuous(
     position = "top",
-    name = "Année", 
-    expand = c(0,0), breaks = scales::pretty_breaks(n = 10)
+    name = "", 
+    expand = c(0,0), breaks = scales::pretty_breaks(n = 16)
     ) +
   scale_y_continuous(expand = c(0,0)) +
-  scale_fill_gradient2(
-    low = "#000080", high = "#c91d34", mid = "#ffefff")
+  scale_fill_gradient2(name = "Écart",
+      breaks = -2:2,
+      labels = paste0(c("-2", "-1", "0", "+1", "+2"), "°C"),
+     # low = "#1c5263", high = "#c91d34", mid = "#ffefff",
+      low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
+      guide = guide_colourbar(title.hjust = 0, nbin = 10))
+
+
+  # labs(
+  #   title = "Températures à Genève de 1753 à 2018,\nvoyez-vous une tendance?",
+  #   subtitle = "Ecarts des températures annuelles de Genève avec la moyenne 1961-1990"
+  #   )
 
   # library(RColorBrewer)
   # brewer.pal(11, "RdBu")
@@ -151,7 +177,7 @@ summer_jaja <- summer_ja %>%
     paste0(
       "<b>", Year, "</b><br>Ecart: <b>", 
       ifelse(devAverage > 0, "+", ""), round(devAverage, 2), 
-      "</b> °C en juin-août<br>par rapport à 1864-1900<br><br>",
+      "</b> °C en juin-août<br>par rapport à 1961-1990<br><br>",
       "- juin: ", Juin, "°C <br>",
       "- juillet: ", `Juil.`, "°C <br>",
       "- août: ", Août, "°C<br>"
@@ -219,15 +245,14 @@ save_html(
         HTML(dimensionWatcher)
         ),
       tags$body(
-        # h2(HTML("Ce n'est pas qu'une impression, il fait toujours plus chaud en été à Genève"),
+        h2(HTML("Ce n'est pas qu'une impression, il fait toujours plus chaud en été à Genève")),
         div(class = "descr", HTML(paste0(
-          "Écarts de la température moyenne juin-août avec la moyenne de 1864-1900, chaque année de 1864 à 2018"
+          "Écarts de la température moyenne juin-août avec la moyenne de 1961-1990, chaque année de 1753 à 2018"
         ))),
-        # h3(HTML("Depuis une trentaine d'année, les étés à Genève sont en moyenne systématiquement plus chauds qu'il y a un siècle.")),
+          h3(HTML("Durant les trente dernières années, les étés à Genève étaient systématiquement plus chauds. ")),
         div(class = "graphic", hh),
         div(id = "cite", HTML("source: MétéoSuisse"))
-      )
-    ), 
+    )), 
     file = "summerTemperatureDeviation_GE.html", libdir = "js")
    
 ```
