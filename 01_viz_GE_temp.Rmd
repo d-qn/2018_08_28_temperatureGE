@@ -137,17 +137,16 @@ bg_chart () +
 
 ```{r whole animation}
 if(generateVidAllYears) {
-  dev <- T
+  dev <- F
   
   animationSpeed <- 0.1
   referencePeriod <- c(1961, 1990)
   
   annot_colour <- tam_pal[2] #"#755764" #
   annotext_colour <- '#2b0818'
-  fontSize <- 30 #50 
+  fontSize <- 35 #50 
   syear <- 2010
-  #outfile <- if(dev) "dev_lastYears_GE.mp4" else "anim_EveryYear_GE.mp4"
-  outfile <- if(dev) "dev_lastYears_GE.gif" else "anim_EveryYear_GE.gif"
+  outfile <- if(dev) "dev_lastYears_GE.mp4" else "anim_EveryYear_GE.mp4"
   
   annot_coords <- tibble(
     year =  c(2003, 2003,        2006, 2015, 2018),
@@ -266,8 +265,7 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
   
   if(dev) names(plots)
   
-  #animation::saveVideo({
-  animation::saveGIF({
+  animation::saveVideo({
     for( y in if(dev) (names(plots) %>% tail(16)) else names(plots)) {
       cat("\t", y)
       if(y %in% annot_text$year %>% unique()) {
@@ -295,11 +293,9 @@ annot_text$label <- sapply(annot_text$label, function(lab) paste0(strwrap(lab, 3
         print(plots[[y]])  
       }
     }
-  }, 
-  #video.name = outfile,
-  movie.name = outfile,
+  }, video.name = outfile,
   interval = animationSpeed,
-  ani.width = 620 * 1.4, ani.height = 680 * 1.4
+  ani.width = 620 * 1.6, ani.height = 680 * 1.6
   )
 }
 
@@ -402,13 +398,13 @@ if(generateVidShift) {
   ap <- p + 
     labs(title = "", subtitle = "") + 
     transition_states(
-      timeP, transition_length = 200, state_length = 260, wrap = T
+      timeP, transition_length = 400, state_length = 500, wrap = T
     ) +
     enter_fade() +
     exit_fade()
   
   #vid <- animate(ap,renderer = ffmpeg_renderer())
-  vid <- animate(ap, width = 620 * 1.6, height = 680 * 1.6, fps = 300, 
+  vid <- animate(ap, width = 620 * 3, height = 680 * 3, fps = 600, 
                  renderer = ffmpeg_renderer(
                    options = list(pix_fmt = "yuv420p", loop = 0))
   )
