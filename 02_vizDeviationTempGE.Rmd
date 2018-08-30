@@ -41,7 +41,7 @@ library(highcharter)
 ```{r data load & wrangle}
  # input.url <- 'https://www.meteosuisse.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_GVE.txt'
   # rawData.file <- paste0("data/", basename(input.url))
-  rawData.file <- paste0("data/", "Gve1753_2018.txt")
+  rawData.file <- paste0("data/", "Gve1753_2018_manual.txt")
 
   # Read each txt file and save it as CSV
   header <- read.table(rawData.file, skip = 9, 
@@ -135,18 +135,23 @@ summer_ja %>%
 ```
 
 ```{r teaser heatmap, eval = F}
-  tiles <- yAv %>% ggplot() +
+  fontSize <- 30
+  
+  tiles <- yAv %>% 
+    filter(Year <  2018) %>% 
+  ggplot() +
   geom_tile(aes(x = Year, y = 10, fill = devAverage)) +
-  theme_tam(base_size = 20) + 
+  theme_tam(base_size = fontSize) + 
   theme(
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
     axis.title.y = element_blank(),
-    legend.key.height = unit(2.5, "lines"),
-    legend.key.width = unit(1, "lines"),
-    plot.margin = unit(c(-0.2, 
-                0.2, 0.3, 0.3), "lines")
+   # legend.position = "left",
+    legend.key.height = unit(fontSize / 3.5, "lines"),
+    legend.key.width = unit(1.2, "lines"),
+    plot.margin = unit(c(-0.7, 
+                0.2, 0.5, 0.3), "lines")
         ) + 
   scale_x_continuous(
     position = "top",
@@ -155,20 +160,56 @@ summer_ja %>%
     ) +
   scale_y_continuous(expand = c(0,0)) +
   scale_fill_gradient2(name = "Écart",
-      breaks = -2:2,
-      labels = paste0(c("-2", "-1", "0", "+1", "+2"), "°C"),
-     # low = "#1c5263", high = "#c91d34", mid = "#ffefff",
-      low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
-      guide = guide_colourbar(title.hjust = 0, nbin = 10))
+     breaks = -2:2,
+     labels = paste0(c("-2", "-1", " 0", "+1", "+2"), "°C"),
+      low = "#1c5263", high = "#c91d34", mid = "#ffefff",
+      #low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
+      guide = guide_colourbar(title.hjust = 0))
 
-
+  jpeg("output/geneva_1753_2017_tiles.jpeg", width = 1800, height = 800, quality = 300)
+  print(tiles)
+  dev.off()
+  
+  ### Vertical version for mobile #######
+  tilesM <- yAv %>% 
+    filter(Year <  2018) %>% 
+  ggplot() +
+  geom_tile(aes(x = 10, y = Year, fill = devAverage)) +
+  theme_tam(base_size = fontSize * 1.2) + 
+  theme(
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    legend.position = "top",
+    legend.key.width = unit(fontSize / 3.5, "lines"),
+    legend.key.height= unit(1.2, "lines"),
+    plot.margin = unit(c(0.2, 
+                0.5, 0.5, -0.2), "lines")
+        ) + 
+  scale_y_continuous(
+    trans = "reverse",
+    position = "left",
+    name = "", 
+    expand = c(0,0), breaks = scales::pretty_breaks(n = 16)
+    ) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_fill_gradient2(name = "Écart",
+     breaks = -2:2,
+     labels = paste0(c("-2", "-1", " 0", "+1", "+2"), "°C"),
+      low = "#1c5263", high = "#c91d34", mid = "#ffefff",
+      #low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
+      guide = guide_colourbar(title.hjust = 0))
+    
+  jpeg("output/geneva_1753_2017_tilesM.jpeg", width = 1200, height = 2000, quality = 300)
+  print(tilesM)
+  dev.off()
+  
+  
   # labs(
   #   title = "Températures à Genève de 1753 à 2018,\nvoyez-vous une tendance?",
   #   subtitle = "Ecarts des températures annuelles de Genève avec la moyenne 1961-1990"
   #   )
-
-  # library(RColorBrewer)
-  # brewer.pal(11, "RdBu")
 ```
 
 ```{r prod plot}
@@ -245,11 +286,12 @@ save_html(
         HTML(dimensionWatcher)
         ),
       tags$body(
-        h2(HTML("Ce n'est pas qu'une impression, il fait toujours plus chaud en été à Genève")),
+        # h2(HTML("Ce n'est pas qu'une impression, il fait toujours plus chaud en été à Genève")),
         div(class = "descr", HTML(paste0(
-          "Écarts de la température moyenne juin-août avec la moyenne de 1961-1990, chaque année de 1753 à 2018"
+          "Écarts de la température moyenne juin-août avec la moyenne de 1961-1990, chaque année de 1753 à 2018", 
+          '&nbsp;<img src="https://www.tdg.ch/extern/interactive_wch/tdg/assets/hand_interactive.png" width="20" align="top">'
         ))),
-          h3(HTML("Durant les trente dernières années, les étés à Genève étaient systématiquement plus chauds. ")),
+          # h3(HTML("Durant les trente dernières années, les étés à Genève sont systématiquement plus chauds.")),
         div(class = "graphic", hh),
         div(id = "cite", HTML("source: MétéoSuisse"))
     )), 
