@@ -26,11 +26,10 @@ output:
 
 ```{r setup, include=FALSE}
 download_meteoSuisseData <- F
-cleanOutput <- T
+cleanOutput <- F
 
-generateVidAllYears <- T
+generateVidAllYears <- F
 generateVidShift <- T
-generateInteractiveChart <- T
 
 require(lintr)
 require(here)
@@ -315,7 +314,7 @@ if(generateVidShift) {
   fontSize <- 50
   
   df <- table %>% 
-    filter(Year <= periods$end[1] | Year >= periods$start[2]) %>% 
+    filter((Year >= periods$start[1] & Year <= periods$end[1]) | Year >= periods$start[2]) %>% 
     mutate(
       timeP = factor(ifelse(Year <= periods$end[1], periods$name[1], periods$name[2])),
       colour = ifelse(timeP == periods$name[1], bluered[1], bluered[2])
@@ -365,12 +364,12 @@ if(generateVidShift) {
     geom_xspline(
       data = df,
       aes(x = Month, y = Temperature, group = Year, colour = colour), 
-      size = 0.2, alpha  = 0.95
+      size = 0.3, alpha  = 0.9
     ) +
     geom_line(
       data = mAverageByP,
       aes(x = Month, y = monthlyPAv, group = 1, colour = colour),
-      size = fontSize / 16, linetype = "dashed"
+      size = fontSize / 10, linetype = "dashed"
     ) +
     geom_text(
       data = shiftLabel, hjust = 0.5, vjust = 0, nudge_y = 0.2,
@@ -408,7 +407,9 @@ if(generateVidShift) {
                  renderer = ffmpeg_renderer(
                    options = list(pix_fmt = "yuv420p", loop = 0))
   )
-  vid %>% save_animation(file = paste0("animShift_GE_", periods$start, ".mp4", collapse = "_"))  
+  vid %>% save_animation(file = 
+                           paste0("animShift_GE_", 
+                                  paste0(periods$start, collapse = "_"), ".mp4"))  
 }
 
 

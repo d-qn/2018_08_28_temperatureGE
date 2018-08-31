@@ -8,6 +8,7 @@ body {
 body, h1, h2, h3, h5, h6m .descr, td, table {
   font-family: 'Titillium Web', sans-serif;
   max-width: 660px;
+  min-width: 300px;
 }
 
 h2, h3, .h3in, h4 {
@@ -97,11 +98,11 @@ text-decoration: underline;
 
 @media only screen and (max-width: 600px) {
   body {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
 video {
-width: 100%    !important;
-height: auto   !important;
+  width: 100%    !important;
+  height: auto   !important;
 }
