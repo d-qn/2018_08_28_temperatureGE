@@ -185,7 +185,7 @@ summer_ja %>%
     legend.key.width = unit(fontSize / 3.5, "lines"),
     legend.key.height= unit(1.2, "lines"),
     plot.margin = unit(c(0.2, 
-                0.5, 0.5, -0.2), "lines")
+                0.6, 0.5, -0.4s), "lines")
         ) + 
   scale_y_continuous(
     trans = "reverse",
@@ -199,9 +199,9 @@ summer_ja %>%
      labels = paste0(c("-2", "-1", " 0", "+1", "+2"), "°C"),
       low = "#1c5263", high = "#c91d34", mid = "#ffefff",
       #low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
-      guide = guide_colourbar(title.hjust = 0))
+      guide = guide_colourbar(title.vjust = 0))
     
-  jpeg("output/geneva_1753_2017_tilesM.jpeg", width = 1200, height = 2000, quality = 300)
+  jpeg("output/geneva_1753_2017_tilesM.jpeg", width = 1000, height = 1600, quality = 300)
   print(tilesM)
   dev.off()
   
