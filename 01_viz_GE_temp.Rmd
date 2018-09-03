@@ -412,8 +412,6 @@ if(generateVidShift) {
                                   paste0(periods$start, collapse = "_"), ".mp4"))  
 }
 
-
-
 ```
 
 ```{r move production graphics}

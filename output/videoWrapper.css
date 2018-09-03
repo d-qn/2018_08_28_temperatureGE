@@ -8,7 +8,6 @@ body {
 body, h1, h2, h3, h5, h6m .descr, td, table {
   font-family: 'Titillium Web', sans-serif;
   max-width: 660px;
-  min-width: 300px;
 }
 
 h2, h3, .h3in, h4 {
@@ -105,4 +104,17 @@ text-decoration: underline;
 video {
   width: 100%    !important;
   height: auto   !important;
+}
+.videoWrapper {
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+}
+.videoWrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }

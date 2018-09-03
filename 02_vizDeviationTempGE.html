@@ -345,11 +345,11 @@ yAv %&gt;%
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
     axis.title.y = element_blank(),
-   # legend.position = &quot;left&quot;,
     legend.key.height = unit(fontSize / 3.5, &quot;lines&quot;),
     legend.key.width = unit(1.2, &quot;lines&quot;),
-    plot.margin = unit(c(-0.7, 
-                0.2, 0.5, 0.3), &quot;lines&quot;)
+    legend.margin = unit(c(1,1,1,1), &quot;lines&quot;),
+    plot.margin = unit(c(-2, 
+                1, 1, 0.3), &quot;lines&quot;)
         ) + 
   scale_x_continuous(
     position = &quot;top&quot;,
@@ -362,13 +362,15 @@ yAv %&gt;%
      labels = paste0(c(&quot;-2&quot;, &quot;-1&quot;, &quot; 0&quot;, &quot;+1&quot;, &quot;+2&quot;), &quot;°C&quot;),
       low = &quot;#1c5263&quot;, high = &quot;#c91d34&quot;, mid = &quot;#ffefff&quot;,
       #low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
-      guide = guide_colourbar(title.hjust = 0))
-
-  jpeg(&quot;output/geneva_1753_2017_tiles.jpeg&quot;, width = 1800, height = 800, quality = 300)
+      guide = guide_colourbar(title.hjust = 0, ticks.linewidth = 3))</code></pre>
+<pre><code>## Warning: `legend.margin` must be specified using `margin()`. For the old
+## behavior use legend.spacing</code></pre>
+<pre class="r"><code>  jpeg(&quot;output/geneva_1753_2017_tiles.jpeg&quot;, width = 1600, height = 800, quality = 300)
   print(tiles)
-  dev.off()
-  
-  ### Vertical version for mobile #######
+  dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<pre class="r"><code>  ### Vertical version for mobile #######
   tilesM &lt;- yAv %&gt;% 
     filter(Year &lt;  2018) %&gt;% 
   ggplot() +
@@ -380,10 +382,11 @@ yAv %&gt;%
     axis.text.x = element_blank(),
     axis.title.x = element_blank(),
     legend.position = &quot;top&quot;,
-    legend.key.width = unit(fontSize / 3.5, &quot;lines&quot;),
-    legend.key.height= unit(1.2, &quot;lines&quot;),
-    plot.margin = unit(c(0.2, 
-                0.6, 0.5, -0.4s), &quot;lines&quot;)
+    legend.margin = unit(c(3,1,-8,1), &quot;lines&quot;),
+    legend.key.width = unit(fontSize / 3.8, &quot;lines&quot;),
+    legend.key.height= unit(1.3, &quot;lines&quot;),
+    plot.margin = unit(c(2, 
+                0.6, 0.3, -2.2), &quot;lines&quot;)
         ) + 
   scale_y_continuous(
     trans = &quot;reverse&quot;,
@@ -397,14 +400,15 @@ yAv %&gt;%
      labels = paste0(c(&quot;-2&quot;, &quot;-1&quot;, &quot; 0&quot;, &quot;+1&quot;, &quot;+2&quot;), &quot;°C&quot;),
       low = &quot;#1c5263&quot;, high = &quot;#c91d34&quot;, mid = &quot;#ffefff&quot;,
       #low = tam_dpal[1], high = tam_dpal[13], mid = tam_dpal[7],
-      guide = guide_colourbar(title.vjust = 0))
-    
-  jpeg(&quot;output/geneva_1753_2017_tilesM.jpeg&quot;, width = 1000, height = 1600, quality = 300)
+      guide = guide_colourbar(title.vjust = 1, ticks.linewidth = 3))</code></pre>
+<pre><code>## Warning: `legend.margin` must be specified using `margin()`. For the old
+## behavior use legend.spacing</code></pre>
+<pre class="r"><code>  jpeg(&quot;output/geneva_1753_2017_tilesM.jpeg&quot;, width = 800, height = 1200, quality = 400)
   print(tilesM)
-  dev.off()
-  
-  
-  # labs(
+  dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<pre class="r"><code>  # labs(
   #   title = &quot;Températures à Genève de 1753 à 2018,\nvoyez-vous une tendance?&quot;,
   #   subtitle = &quot;Ecarts des températures annuelles de Genève avec la moyenne 1961-1990&quot;
   #   )</code></pre>
@@ -709,9 +713,6 @@ save_html(
 ## 02_vizDeviationTempGE.Rmd:131:28: style: Variable and function names should be all lowercase.
 ##   ggplot(aes(x = Year, y = devAverage, fill = colour)) +
 ##                            ^~~~~~~~~~
-## 02_vizDeviationTempGE.Rmd:138:3: style: Variable and function names should be all lowercase.
-##   fontSize &lt;- 30
-##   ^~~~~~~~
 ## 02_vizDeviationTempGE.Rmd:140:19: style: Trailing whitespace is superfluous.
 ##   tiles &lt;- yAv %&gt;% 
 ##                   ^
@@ -721,18 +722,21 @@ save_html(
 ## 02_vizDeviationTempGE.Rmd:143:42: style: Variable and function names should be all lowercase.
 ##   geom_tile(aes(x = Year, y = 10, fill = devAverage)) +
 ##                                          ^~~~~~~~~~
-## 02_vizDeviationTempGE.Rmd:144:25: style: Variable and function names should be all lowercase.
-##   theme_tam(base_size = fontSize) + 
-##                         ^~~~~~~~
 ## 02_vizDeviationTempGE.Rmd:144:36: style: Trailing whitespace is superfluous.
 ##   theme_tam(base_size = fontSize) + 
 ##                                    ^
-## 02_vizDeviationTempGE.Rmd:151:30: style: Variable and function names should be all lowercase.
-##     legend.key.height = unit(fontSize / 3.5, &quot;lines&quot;),
-##                              ^~~~~~~~
-## 02_vizDeviationTempGE.Rmd:153:31: style: Trailing whitespace is superfluous.
-##     plot.margin = unit(c(-0.7, 
-##                               ^
+## 02_vizDeviationTempGE.Rmd:152:30: style: Commas should always have a space after.
+##     legend.margin = unit(c(1,1,1,1), &quot;lines&quot;),
+##                              ^
+## 02_vizDeviationTempGE.Rmd:152:32: style: Commas should always have a space after.
+##     legend.margin = unit(c(1,1,1,1), &quot;lines&quot;),
+##                                ^
+## 02_vizDeviationTempGE.Rmd:152:34: style: Commas should always have a space after.
+##     legend.margin = unit(c(1,1,1,1), &quot;lines&quot;),
+##                                  ^
+## 02_vizDeviationTempGE.Rmd:153:29: style: Trailing whitespace is superfluous.
+##     plot.margin = unit(c(-2, 
+##                             ^
 ## 02_vizDeviationTempGE.Rmd:155:12: style: Trailing whitespace is superfluous.
 ##         ) + 
 ##            ^
@@ -746,14 +750,8 @@ save_html(
 ##   scale_y_continuous(expand = c(0,0)) +
 ##                                   ^
 ## 02_vizDeviationTempGE.Rmd:169:1: style: lines should not be more than 80 characters.
-##   jpeg(&quot;output/geneva_1753_2017_tiles.jpeg&quot;, width = 1800, height = 800, quality = 300)
+##   jpeg(&quot;output/geneva_1753_2017_tiles.jpeg&quot;, width = 1600, height = 800, quality = 300)
 ## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## 02_vizDeviationTempGE.Rmd:174:3: style: Variable and function names should be all lowercase.
-##   tilesM &lt;- yAv %&gt;% 
-##   ^~~~~~
-## 02_vizDeviationTempGE.Rmd:174:20: style: Trailing whitespace is superfluous.
-##   tilesM &lt;- yAv %&gt;% 
-##                    ^
 ## 02_vizDeviationTempGE.Rmd:174:20: style: Trailing whitespace is superfluous.
 ##   tilesM &lt;- yAv %&gt;% 
 ##                    ^
@@ -763,33 +761,132 @@ save_html(
 ## 02_vizDeviationTempGE.Rmd:177:42: style: Variable and function names should be all lowercase.
 ##   geom_tile(aes(x = 10, y = Year, fill = devAverage)) +
 ##                                          ^~~~~~~~~~
-## 02_vizDeviationTempGE.Rmd:178:25: style: Variable and function names should be all lowercase.
-##   theme_tam(base_size = fontSize * 1.2) + 
-##                         ^~~~~~~~
 ## 02_vizDeviationTempGE.Rmd:178:42: style: Trailing whitespace is superfluous.
 ##   theme_tam(base_size = fontSize * 1.2) + 
 ##                                          ^
-## 02_vizDeviationTempGE.Rmd:185:29: style: Variable and function names should be all lowercase.
-##     legend.key.width = unit(fontSize / 3.5, &quot;lines&quot;),
-##                             ^~~~~~~~
-## 02_vizDeviationTempGE.Rmd:187:17: style: Use &lt;-, not =, for assignment.
-##     plot.margin = unit(c(0.2, 
-##                 ^
-## 02_vizDeviationTempGE.Rmd:187:30: style: Trailing whitespace is superfluous.
-##     plot.margin = unit(c(0.2, 
+## 02_vizDeviationTempGE.Rmd:185:30: style: Commas should always have a space after.
+##     legend.margin = unit(c(3,1,-8,1), &quot;lines&quot;),
 ##                              ^
-## 02_vizDeviationTempGE.Rmd:187:30: style: Trailing whitespace is superfluous.
-##     plot.margin = unit(c(0.2, 
-##                              ^
-## 02_vizDeviationTempGE.Rmd:187:30: style: Trailing whitespace is superfluous.
-##     plot.margin = unit(c(0.2, 
-##                              ^
-## 02_vizDeviationTempGE.Rmd:188:31: error: unexpected symbol
-##                 0.6, 0.5, -0.4s), &quot;lines&quot;)
-##                               ^
-## 02_vizDeviationTempGE.Rmd:211:7: style: Commented code should be removed.
+## 02_vizDeviationTempGE.Rmd:185:32: style: Commas should always have a space after.
+##     legend.margin = unit(c(3,1,-8,1), &quot;lines&quot;),
+##                                ^
+## 02_vizDeviationTempGE.Rmd:185:35: style: Commas should always have a space after.
+##     legend.margin = unit(c(3,1,-8,1), &quot;lines&quot;),
+##                                   ^
+## 02_vizDeviationTempGE.Rmd:187:22: style: Put spaces around all infix operators.
+##     legend.key.height= unit(1.3, &quot;lines&quot;),
+##                     ~^
+## 02_vizDeviationTempGE.Rmd:188:28: style: Trailing whitespace is superfluous.
+##     plot.margin = unit(c(2, 
+##                            ^
+## 02_vizDeviationTempGE.Rmd:190:12: style: Trailing whitespace is superfluous.
+##         ) + 
+##            ^
+## 02_vizDeviationTempGE.Rmd:194:15: style: Trailing whitespace is superfluous.
+##     name = &quot;&quot;, 
+##               ^
+## 02_vizDeviationTempGE.Rmd:195:18: style: Commas should always have a space after.
+##     expand = c(0,0), breaks = scales::pretty_breaks(n = 16)
+##                  ^
+## 02_vizDeviationTempGE.Rmd:197:35: style: Commas should always have a space after.
+##   scale_x_continuous(expand = c(0,0)) +
+##                                   ^
+## 02_vizDeviationTempGE.Rmd:205:1: style: lines should not be more than 80 characters.
+##   jpeg(&quot;output/geneva_1753_2017_tilesM.jpeg&quot;, width = 800, height = 1200, quality = 400)
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:212:7: style: Commented code should be removed.
 ##   #   subtitle = &quot;Ecarts des températures annuelles de Genève avec la moyenne 1961-1990&quot;
-##       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code></pre>
+##       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:217:29: style: Trailing whitespace is superfluous.
+## summer_jaja &lt;- summer_ja %&gt;% 
+##                             ^
+## 02_vizDeviationTempGE.Rmd:218:14: style: Trailing whitespace is superfluous.
+##   mutate(tp = 
+##              ^
+## 02_vizDeviationTempGE.Rmd:220:41: style: Trailing whitespace is superfluous.
+##       &quot;&lt;b&gt;&quot;, Year, &quot;&lt;/b&gt;&lt;br&gt;Ecart: &lt;b&gt;&quot;, 
+##                                         ^
+## 02_vizDeviationTempGE.Rmd:221:14: style: Variable and function names should be all lowercase.
+##       ifelse(devAverage &gt; 0, &quot;+&quot;, &quot;&quot;), round(devAverage, 2), 
+##              ^~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:221:46: style: Variable and function names should be all lowercase.
+##       ifelse(devAverage &gt; 0, &quot;+&quot;, &quot;&quot;), round(devAverage, 2), 
+##                                              ^~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:221:61: style: Trailing whitespace is superfluous.
+##       ifelse(devAverage &gt; 0, &quot;+&quot;, &quot;&quot;), round(devAverage, 2), 
+##                                                             ^
+## 02_vizDeviationTempGE.Rmd:227:8: style: Trailing whitespace is superfluous.
+##       )     
+##        ^~~~~
+## 02_vizDeviationTempGE.Rmd:230:25: style: Trailing whitespace is superfluous.
+##   summer_jaja, &quot;column&quot;, 
+##                         ^
+## 02_vizDeviationTempGE.Rmd:231:23: style: Variable and function names should be all lowercase.
+##   hcaes(x = Year, y = devAverage, color = colour, tp = tp)
+##                       ^~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:232:6: style: Trailing whitespace is superfluous.
+## ) %&gt;% 
+##      ^
+## 02_vizDeviationTempGE.Rmd:244:10: style: Trailing whitespace is superfluous.
+##     ) %&gt;% 
+##          ^
+## 02_vizDeviationTempGE.Rmd:250:8: style: Trailing whitespace is superfluous.
+##   ) %&gt;% 
+##        ^
+## 02_vizDeviationTempGE.Rmd:252:45: style: Trailing whitespace is superfluous.
+##     pointPadding = 0, groupPadding = 0)) %&gt;% 
+##                                             ^
+## 02_vizDeviationTempGE.Rmd:253:32: style: Trailing whitespace is superfluous.
+##   hc_add_theme(hc_theme_tg) %&gt;% 
+##                                ^
+## 02_vizDeviationTempGE.Rmd:254:29: style: Trailing whitespace is superfluous.
+##   hc_legend(enabled = F) %&gt;% 
+##                             ^
+## 02_vizDeviationTempGE.Rmd:256:78: style: Trailing whitespace is superfluous.
+##       hideDelay = 10, formatter = JS(&quot;function() { return this.point.tp; }&quot;), 
+##                                                                              ^
+## 02_vizDeviationTempGE.Rmd:257:36: style: Trailing whitespace is superfluous.
+##       useHTML = T, borderWidth = 1, 
+##                                    ^
+## 02_vizDeviationTempGE.Rmd:258:25: style: Only use double-quotes.
+##       backgroundColor = 'rgba(255,255,255,1)', 
+##                         ^~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:258:47: style: Trailing whitespace is superfluous.
+##       backgroundColor = 'rgba(255,255,255,1)', 
+##                                               ^
+## 02_vizDeviationTempGE.Rmd:266:1: style: lines should not be more than 80 characters.
+## subtitle_text &lt;- &quot;❝ Les fluctuations de températures d'année en année étaient principalement naturelles. La hausse des températures des dernières décennies, ne peuvent s'expliquer que par l'augmentation des émissions de gaz à effet de serre (changement climatique) ❞ MétéoSuise&quot; 
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:266:279: style: Trailing whitespace is superfluous.
+## subtitle_text &lt;- &quot;❝ Les fluctuations de températures d'année en année étaient principalement naturelles. La hausse des températures des dernières décennies, ne peuvent s'expliquer que par l'augmentation des émissions de gaz à effet de serre (changement climatique) ❞ MétéoSuise&quot; 
+##                                                                                                                                                                                                                                                                                       ^
+## 02_vizDeviationTempGE.Rmd:286:45: style: Trailing whitespace is superfluous.
+##         includeCSS(style_tam_highcharter()), 
+##                                             ^
+## 02_vizDeviationTempGE.Rmd:290:1: style: lines should not be more than 80 characters.
+##         # h2(HTML(&quot;Ce n'est pas qu'une impression, il fait toujours plus chaud en été à Genève&quot;)),
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:292:1: style: lines should not be more than 80 characters.
+##           &quot;Écarts de la température moyenne juin-août avec la moyenne de 1961-1990, chaque année de 1753 à 2018&quot;, 
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:292:114: style: Trailing whitespace is superfluous.
+##           &quot;Écarts de la température moyenne juin-août avec la moyenne de 1961-1990, chaque année de 1753 à 2018&quot;, 
+##                                                                                                                  ^
+## 02_vizDeviationTempGE.Rmd:293:1: style: lines should not be more than 80 characters.
+##           '&amp;nbsp;&lt;img src=&quot;https://www.tdg.ch/extern/interactive_wch/tdg/assets/hand_interactive.png&quot; width=&quot;20&quot; align=&quot;top&quot;&gt;'
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:295:1: style: lines should not be more than 80 characters.
+##           # h3(HTML(&quot;Durant les trente dernières années, les étés à Genève sont systématiquement plus chauds.&quot;)),
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:298:8: style: Trailing whitespace is superfluous.
+##     )), 
+##        ^
+## 02_vizDeviationTempGE.Rmd:312:1: style: lines should not be more than 80 characters.
+##   ori.files &lt;- list.files(&quot;output&quot;, full.names = T)[list.files(&quot;output&quot;) != &quot;bak&quot;]
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 02_vizDeviationTempGE.Rmd:316:1: style: lines should not be more than 80 characters.
+##   files_tomove &lt;- lapply(files, function(x) list.files(pattern = x)) %&gt;% unlist()
+## ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</code></pre>
 
 
 
